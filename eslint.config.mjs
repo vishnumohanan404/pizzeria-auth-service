@@ -7,7 +7,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ["dist", "node_modules", "eslint.config.mjs"],
+    ignores: ["dist", "node_modules", "eslint.config.mjs", "jest.config.js"],
   },
   {
     languageOptions: {
@@ -15,6 +15,9 @@ export default tseslint.config(
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      "@typescript-eslint/no-misused-promises": "off",
     },
   },
 );
