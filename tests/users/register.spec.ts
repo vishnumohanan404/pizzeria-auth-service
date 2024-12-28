@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../app";
+import app from "../../src/app";
 describe("POST /auth/register", () => {
   describe("Given all fields", () => {
     it("should return the 201 status code", async () => {
