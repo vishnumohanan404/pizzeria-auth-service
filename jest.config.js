@@ -5,5 +5,5 @@ module.exports = {
     "^.+.tsx?$": ["ts-jest", {}],
   },
   preset: "ts-jest",
-  verbose: true
+  verbose: true,
 };
