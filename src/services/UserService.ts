@@ -2,6 +2,7 @@ import createHttpError from "http-errors";
 import { User } from "../entity/User";
 import { UserData } from "../types";
 import { Repository } from "typeorm";
+import { Roles } from "../constants";
 
 export class UserService {
   constructor(private userRepository: Repository<User>) {}
@@ -12,6 +13,7 @@ export class UserService {
         lastName,
         email,
         password,
+        role: Roles.CUSTOMER,
       });
     } catch (err) {
       console.error("Database save error:", err);
