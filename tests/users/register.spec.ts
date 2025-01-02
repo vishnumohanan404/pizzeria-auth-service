@@ -39,6 +39,7 @@ describe("POST /auth/register", () => {
       // Assert
       expect(response.statusCode).toBe(201);
     });
+
     it("should return a valid json response", async () => {
       const userData = {
         firstName: "Vishnu",
@@ -51,6 +52,7 @@ describe("POST /auth/register", () => {
         expect.stringContaining("json"),
       );
     });
+
     it("should persist user in the database", async () => {
       const userData = {
         firstName: "Vishnu",
@@ -67,8 +69,8 @@ describe("POST /auth/register", () => {
       expect(users[0].email).toBe(userData.email);
       expect(users[0].firstName).toBe(userData.firstName);
       expect(users[0].lastName).toBe(userData.lastName);
-      expect(users[0].password).toBe(userData.password);
     });
+
     it("should return an id of the created user", async () => {
       const userData = {
         firstName: "Vishnu",
@@ -76,7 +78,6 @@ describe("POST /auth/register", () => {
         email: "vishnu@example.com",
         password: "password123",
       };
-      // const response =
       const response: { body: User } = await request(app)
         .post("/auth/register")
         .send(userData);
@@ -86,6 +87,7 @@ describe("POST /auth/register", () => {
 
       expect(users[0].id).toBe(response.body.id);
     });
+
     it("should assign a customer role", async () => {
       const userData = {
         firstName: "Vishnu",
@@ -99,6 +101,35 @@ describe("POST /auth/register", () => {
       const users = await userRepository.find();
       expect(users[0]).toHaveProperty("role");
       expect(users[0].role).toBe(Roles.CUSTOMER);
+    });
+
+    it("should store the hashe of the password in the database", async () => {
+      const userData = {
+        firstName: "Vishnu",
+        lastName: "Mohan",
+        email: "vishnu@example.com",
+        password: "password123",
+      };
+      await request(app).post("/auth/register").send(userData);
+      const userRepository = connection.getRepository(User);
+      const users = await userRepository.find();
+      expect(users[0].password).not.toBe(userData.password);
+      expect(users[0].password).toHaveLength(60);
+      expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
+    });
+    it("should return 400 if email is already in use", async () => {
+      const userData = {
+        firstName: "Vishnu",
+        lastName: "Mohan",
+        email: "vishnu@example.com",
+        password: "password123",
+      };
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({ ...userData, role: Roles.CUSTOMER });
+      const response = await request(app).post("/auth/register").send(userData);
+      const users = await userRepository.find();
+      expect(response.statusCode).toBe(400);
+      expect(users).toHaveLength(1);
     });
   });
   describe("Fields are missing", () => {});
