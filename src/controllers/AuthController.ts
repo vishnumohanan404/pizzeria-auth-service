@@ -16,6 +16,7 @@ export class AuthController {
       const errors = result.array();
       this.logger.error("Validation errors:", errors);
       res.status(400).json({ errors });
+      return;
     }
     const { firstName, lastName, email, password } = req.body;
     this.logger.debug("New request to register a user", {
