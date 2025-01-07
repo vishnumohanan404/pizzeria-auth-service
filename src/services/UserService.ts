@@ -23,8 +23,7 @@ export class UserService {
         password: hashedPassword,
         role: Roles.CUSTOMER,
       });
-    } catch (err) {
-      console.error("Database save error:", err);
+    } catch {
       const error = createHttpError(
         500,
         "Failed to store the data in the database",
