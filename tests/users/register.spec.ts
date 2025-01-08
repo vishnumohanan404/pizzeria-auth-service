@@ -5,6 +5,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { Roles } from "../../src/constants";
 import { isJwt } from "../utils";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 describe("POST /auth/register", () => {
   let connection: DataSource;
   beforeAll(async () => {
@@ -35,17 +36,21 @@ describe("POST /auth/register", () => {
       expect(response.statusCode).toBe(201);
     });
 
-    it("should return a valid json response", async () => {
+    it("should return valid json response", async () => {
+      // Arrange
       const userData = {
         firstName: "Vishnu",
         lastName: "Mohan",
         email: "vishnu@example.com",
         password: "password123",
       };
+      // Act
       const response = await request(app).post("/auth/register").send(userData);
-      expect(response.headers["content-type"]).toEqual(
-        expect.stringContaining("json"),
-      );
+
+      // Assert application/json utf-8
+      expect(
+        (response.headers as Record<string, string>)["content-type"],
+      ).toEqual(expect.stringContaining("json"));
     });
 
     it("should persist user in the database", async () => {
@@ -155,6 +160,25 @@ describe("POST /auth/register", () => {
       expect(refreshToken).not.toBeNull();
       expect(isJwt(accessToken)).toBeTruthy();
       expect(isJwt(refreshToken)).toBeTruthy();
+    });
+
+    it("should store the refresh token in the database", async () => {
+      const userData = {
+        firstName: "Vishnu",
+        lastName: "Mohan",
+        email: "vishnu@example.com",
+        password: "password123",
+      };
+      const response = await request(app).post("/auth/register").send(userData);
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+      // const refreshToken = await refreshTokenRepo.find();
+      const token = await refreshTokenRepo
+        .createQueryBuilder("refreshToken")
+        .where("refreshToken.userId = :userId", {
+          userId: (response.body as Record<string, string>).id,
+        })
+        .getMany();
+      expect(token).toHaveLength(1);
     });
   });
 
