@@ -17,6 +17,7 @@ describe("POST /auth/login", () => {
 
   describe("Given all fields", () => {
     // TODO: write all tests with ref as reg
-    it.todo("should login the user");
+    it.todo("should return the access token and refresh token inside a cookie");
+    it.todo("should return the 400 if email or password is wrong");
   });
 });
