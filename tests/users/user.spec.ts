@@ -58,6 +58,7 @@ describe("POST /auth/self", () => {
       // Assert - Check if user id matches with registered user
       expect((response.body as Record<string, string>).id).toBe(data.id);
     });
+
     it("should not return the password field", async () => {
       // Register user
       const userRepository = connection.getRepository(User);
@@ -82,6 +83,24 @@ describe("POST /auth/self", () => {
       expect(response.body as Record<string, string>).not.toHaveProperty(
         "password",
       );
+    });
+
+    it("should return 401 status code if token does not exists", async () => {
+      // Register user
+      const userRepository = connection.getRepository(User);
+      const userData = {
+        firstName: "Vishnu",
+        lastName: "Mohan",
+        email: "vishnu@example.com",
+        password: "password123",
+      };
+      await userRepository.save({
+        ...userData,
+        role: Roles.CUSTOMER,
+      });
+      const response = await request(app).get("/auth/self").send();
+      // Assert - Check if user id matches with registered user
+      expect(response.statusCode).toBe(401);
     });
   });
 });
