@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { CreateUserRequest } from "../types";
+import { CreateUserRequest, UpdateUserRequest } from "../types";
 import { Roles } from "../constants";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
+import { validationResult } from "express-validator";
 
 export class UserController {
   constructor(
@@ -12,6 +13,13 @@ export class UserController {
   ) {}
 
   async create(req: CreateUserRequest, res: Response, next: NextFunction) {
+    // Validation
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      res.status(400).json({ errors: result.array() });
+      return;
+    }
+
     const { firstName, lastName, email, password } = req.body;
     try {
       const user = await this.userService.create({
@@ -28,9 +36,16 @@ export class UserController {
     }
   }
 
-  async update(req: CreateUserRequest, res: Response, next: NextFunction) {
+  async update(req: UpdateUserRequest, res: Response, next: NextFunction) {
     // In our project: We are not allowing user to change the email id since it is used as username
     // In our project: We are not allowing admin user to change others password
+
+    // Validation
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      res.status(400).json({ errors: result.array() });
+      return;
+    }
 
     const { firstName, lastName, role } = req.body;
     const userId = req.params.id;
