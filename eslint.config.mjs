@@ -12,6 +12,8 @@ export default tseslint.config(
       "eslint.config.mjs",
       "scripts",
       "jest.config.js",
+      "*.spec.ts",
+      "tests/",
     ],
   },
   {
