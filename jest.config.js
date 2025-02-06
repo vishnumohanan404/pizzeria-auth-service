@@ -6,4 +6,7 @@ module.exports = {
   },
   preset: "ts-jest",
   verbose: true,
+  collectCoverage: true,
+  coverageProvider: "v8",
+  collectCoverageFrom: ["src/**/*.ts", "!tests/**", "!**/node_modules/** "],
 };
