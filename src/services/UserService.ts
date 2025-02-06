@@ -30,8 +30,11 @@ export class UserService {
       throw error;
     }
   }
-  async findByEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email } });
+  async findByEmailWithPassword(email: string) {
+    return await this.userRepository.findOne({
+      where: { email },
+      select: ["id", "firstName", "lastName", "email", "role", "password"],
+    });
   }
   async findById(id: number) {
     return await this.userRepository.findOne({ where: { id } });
@@ -50,5 +53,8 @@ export class UserService {
       );
       throw error;
     }
+  }
+  async getAll() {
+    return await this.userRepository.find();
   }
 }
