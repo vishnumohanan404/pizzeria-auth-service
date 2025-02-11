@@ -9,8 +9,8 @@ import { RefreshToken } from "../../src/entity/RefreshToken";
 describe("POST /auth/register", () => {
   let connection: DataSource;
   beforeAll(async () => {
-    // connection = await AppDataSource.initialize();
     connection = await AppDataSource.initialize();
+    console.log("connection :>> ", connection);
   });
   beforeEach(async () => {
     await connection.dropDatabase();
