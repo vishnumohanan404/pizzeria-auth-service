@@ -51,7 +51,7 @@ export class UserController {
       return;
     }
 
-    const { firstName, lastName, role } = req.body;
+    const { firstName, lastName, role, email, tenantId } = req.body;
     const userId = req.params.id;
 
     if (isNaN(Number(userId))) {
@@ -66,6 +66,8 @@ export class UserController {
         firstName,
         lastName,
         role,
+        email,
+        tenantId,
       });
 
       this.logger.info("User has been updated", { id: userId });
