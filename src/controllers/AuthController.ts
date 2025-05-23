@@ -112,6 +112,7 @@ export class AuthController {
       const payload: JwtPayload = {
         sub: String(user.id),
         role: user.role,
+        tenant: user.tenant ? String(user.tenant.id) : "",
       };
 
       const accessToken = this.tokenService.generateAccessToken(payload);
@@ -153,6 +154,7 @@ export class AuthController {
       const payload: JwtPayload = {
         sub: String(req.auth.sub),
         role: req.auth.role,
+        tenant: req.auth.tenant,
       };
       // TODO: add logger for token generation
       // TODO: move token generation logic to a method and use it DRY
