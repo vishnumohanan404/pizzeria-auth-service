@@ -68,7 +68,7 @@ export class TenantController {
       const tenants = await this.tenantService.getAll();
 
       this.logger.info("All tenant have been fetched");
-      res.json(tenants);
+      res.json({ data: tenants });
     } catch (err) {
       next(err);
     }
